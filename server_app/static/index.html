@@ -1,0 +1,200 @@
+<html>
+
+<head>
+    <title></title>
+    <style>
+        body {
+            background: linear-gradient(135deg,
+                    /* cool metallic background effect */
+                    #000000 0%,
+                    #434343 25%,
+                    #bbbbbb 50%,
+                    #434343 75%,
+                    #000000 100%);
+            color: white;
+        }
+
+        table {
+            height: 100%;
+            width: 100%;
+            table-layout: fixed;
+        }
+
+        button {
+            height: 75px;
+            width: 75px;
+            text-align: center;
+            background-color: black;
+            border-radius: 5px;
+            border-width: 2px;
+            border-color: white;
+            color: white;
+        }
+
+        img {
+            height: 50px;
+            width: 50px;
+            text-align: center;
+            margin-bottom: -2px;
+        }
+    </style>
+</head>
+
+<body>
+    <table cellspacing="0" cellpadding="0">
+        <tr>
+            <td><button id="1"></button>
+            </td>
+            <td><button id="2"></button></td>
+            <td><button id="3"></button></td>
+            <td><button id="4"></button></td>
+            <td><button id="5"></button></td>
+            <td><button id="6"></button></td>
+            <td><button id="7"></button></td>
+            <td><button id="8"></button></td>
+            <td><button id="9"></button></td>
+            <td><button id="10"></button></td>
+        </tr>
+        <tr>
+            <td><button id="11"></button></td>
+            <td><button id="12"></button></td>
+            <td><button id="13"></button></td>
+            <td><button id="14"></button></td>
+            <td><button id="15"></button></td>
+            <td><button id="16"></button></td>
+            <td><button id="17"></button></td>
+            <td><button id="18"></button></td>
+            <td><button id="19"></button></td>
+            <td><button id="20"></button></td>
+        </tr>
+        <tr>
+            <td><button id="21"></button></td>
+            <td><button id="22"></button></td>
+            <td><button id="23"></button></td>
+            <td><button id="24"></button></td>
+            <td><button id="25"></button></td>
+            <td><button id="26"></button></td>
+            <td><button id="27"></button></td>
+            <td><button id="28"></button></td>
+            <td><button id="29"></button></td>
+            <td><button id="30"></button></td>
+        </tr>
+        <tr>
+            <td><button id="31"></button></td>
+            <td><button id="32"></button></td>
+            <td><button id="33"></button></td>
+            <td><button id="34"></button></td>
+            <td><button id="35"></button></td>
+            <td><button id="36"></button></td>
+            <td><button id="37"></button></td>
+            <td><button id="38"></button></td>
+            <td><button id="39"></button></td>
+            <td><button id="40"></button></td>
+        </tr>
+        <tr>
+            <td><button id="41"></button></td>
+            <td><button id="42"></button></td>
+            <td><button id="43"></button></td>
+            <td><button id="44"></button></td>
+            <td><button id="45"></button></td>
+            <td><button id="46"></button></td>
+            <td><button id="47"></button></td>
+            <td><button id="48"></button></td>
+            <td><button id="49"></button></td>
+            <td><button id="50"></button></td>
+        </tr>
+        <tr>
+            <td><button id="51"></button></td>
+            <td><button id="52"></button></td>
+            <td><button id="53"></button></td>
+            <td><button id="54"></button></td>
+            <td><button id="55"></button></td>
+            <td><button id="56"></button></td>
+            <td><button id="57"></button></td>
+            <td><button id="58"></button></td>
+            <td><button id="59"></button></td>
+            <td><button id="60"></button></td>
+        </tr>
+        <tr>
+            <td><button id="61"></button></td>
+            <td><button id="62"></button></td>
+            <td><button id="63"></button></td>
+            <td><button id="64"></button></td>
+            <td><button id="65"></button></td>
+            <td><button id="66"></button></td>
+            <td><button id="67"></button></td>
+            <td><button id="68"></button></td>
+            <td><button id="69"></button></td>
+            <td><button id="70"></button></td>
+        </tr>
+        <tr>
+            <td><button id="71"></button></td>
+            <td><button id="72"></button></td>
+            <td><button id="73"></button></td>
+            <td><button id="74"></button></td>
+            <td><button id="75"></button></td>
+            <td><button id="76"></button></td>
+            <td><button id="77"></button></td>
+            <td><button id="78"></button></td>
+            <td><button id="79"></button></td>
+            <td><button id="80"></button></td>
+        </tr>
+    </table>
+</body>
+<script>
+    const wsProtocol = location.protocol === 'https:' ? 'wss' : 'ws';
+    const wsUrl = `${wsProtocol}://${location.hostname}:8765`;
+    const socket = new WebSocket(wsUrl);
+
+    socket.addEventListener('open', () => {
+        console.log('websocket connected:', wsUrl);
+
+        socket.send(JSON.stringify({ action: 'get_buttons' }));
+    });
+
+    socket.addEventListener('message', (event) => {
+        let msg;
+        try { msg = JSON.parse(event.data); } catch { return; }
+
+        if (msg.action === 'buttons' && msg.buttons) {
+            for (let id = 1; id <= 80; id++) {
+                const button = document.getElementById(id);
+                if (button && msg.buttons[id]) {
+                    let img = button.querySelector('img');
+                    if (!img) {
+                        img = document.createElement('img');
+                        button.prepend(img);
+                    }
+                    img.src = msg.buttons[id].img;
+
+                    const texts = Array.from(button.childNodes).filter(node => node.nodeType === Node.TEXT_NODE);
+                    if (texts.length > 0) {
+                        texts[0].textContent = ' ' + msg.buttons[id].text;
+                    } else {
+                        button.appendChild(document.createTextNode(' ' + msg.buttons[id].text));
+                    }
+
+                    button.onclick = () => {
+                        socket.send(JSON.stringify({ action: 'click', click: String(id) }));
+                    };
+                }
+            }
+        }
+    });
+
+    socket.addEventListener('close', () => {
+        console.warn('connection closed');
+    });
+
+    socket.addEventListener('error', (error) => {
+        console.error('websocket error:', error);
+    });
+
+    setInterval(() => {
+        if (socket.readyState === WebSocket.OPEN) {
+            socket.send(JSON.stringify({ "action": "keepalive" }));
+        }
+    }, 5000);
+</script>
+
+</html>
