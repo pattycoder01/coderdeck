@@ -23,11 +23,11 @@ with open("config/config.yaml", "r") as f:
     config_file = yaml.safe_load(f)
 
 # setup config
-BINDS_FILE_PATH = config_file["binds"]["file_path"]
-DISCORD_ENABLED = config_file["discord"]["enabled"]
-OBS_ENABLED = config_file["obs"]["enabled"]
-HASSIO_ENABLED = config_file["home_assistant"]["enabled"]
-SOUNDBOARD_ENABLED = config_file["home_assistant"]["enabled"]
+BINDS_FILE_PATH = config_file["binds"]["file_path"] 
+DISCORD_ENABLED = config_file["discord"]["enabled"] == True
+OBS_ENABLED = config_file["obs"]["enabled"] == True
+HASSIO_ENABLED = config_file["home_assistant"]["enabled"] == True
+SOUNDBOARD_ENABLED = config_file["soundboard"]["enabled"] == True
 
 # initialize control interfaces and optional config
 if HASSIO_ENABLED:
